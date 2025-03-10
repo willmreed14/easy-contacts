@@ -75,26 +75,20 @@ def create_contact():
             ),
             400,
         )
-    
+
     # Now we know the data is good to use for the new contact.
     # Create an instance of the Contact class.
-    new_contact = Contact(
-        first_name=first_name,
-        last_name=last_name,
-        email = email
-        )
-    
+    new_contact = Contact(first_name=first_name, last_name=last_name, email=email)
+
     # Add the new_contact object to the database
     try:
-        db.session.add(new_contact) # 'staging area'
-        db.session.commit() # commit staged items to db
+        db.session.add(new_contact)  # 'staging area'
+        db.session.commit()  # commit staged items to db
     except Exception as e:
         return jsonify({"message": str(e)}, 400)
-    
+
     # Return success message
     return jsonify({"message": "Contact added successfully"}), 201
-
-
 
 
 # Only run the entire file from itself.
