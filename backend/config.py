@@ -1,3 +1,5 @@
+"""Configuration module for the Flask backend application."""
+
 # Main config file for the backend
 
 # Build API using Flask
