@@ -115,6 +115,24 @@ def update_contact(user_id):
     # Return success message + status
     return jsonify({"message": "User updated"}), 200
 
+# DELETE: Delete a contact
+@app.route("/delete_contact/<int:user_id>", methods=["DELETE"])
+def delete_contact(user_id):
+
+    # Get the contact to be deleted
+    contact = Contact.query.get(user_id)
+    if not contact:  # Handle contact not found
+        return jsonify({"message": "User not found"}), 404
+    
+    # Delete the contact from the database
+    db.session.delete(contact)
+    db.session.commit()
+
+    # Return success message + status
+    return jsonify({"message": "User deleted!"}), 200
+    
+
+
 # Only run the entire file from itself.
 if __name__ == "__main__":
     # Instantiate the DB by creating the defined models.
