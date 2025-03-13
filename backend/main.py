@@ -91,6 +91,30 @@ def create_contact():
     return jsonify({"message": "Contact added successfully"}), 201
 
 
+# PUT: Update a contact
+@app.route("/update_contact/<int:user_id>", methods=["PATCH"])
+def update_contact(user_id):
+    """Update an existing contact's information by their ID."""
+
+    # Get the contact to be updated
+    contact = Contact.query.get(user_id)
+    if not contact:  # Handle contact not found
+        return jsonify({"message": "User not found"}), 404
+
+    # Start parsing the JSON data
+    data = request.json # take in the new info to apply, if any.
+
+    # Replace w/ new first_name, or default to current first_name.
+    contact.first_name = data.get("firstName", contact.first_name)
+    contact.last_name = data.get("lastName", contact.last_name)
+    contact.email = data.get("email", contact.email)
+
+    # Commit the updated contact to the database
+    db.session.commit()
+
+    # Return success message + status
+    return jsonify({"message": "User updated"}), 200
+
 # Only run the entire file from itself.
 if __name__ == "__main__":
     # Instantiate the DB by creating the defined models.
