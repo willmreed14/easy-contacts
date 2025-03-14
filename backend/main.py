@@ -102,7 +102,7 @@ def update_contact(user_id):
         return jsonify({"message": "User not found"}), 404
 
     # Start parsing the JSON data
-    data = request.json # take in the new info to apply, if any.
+    data = request.json  # take in the new info to apply, if any.
 
     # Replace w/ new first_name, or default to current first_name.
     contact.first_name = data.get("firstName", contact.first_name)
@@ -115,22 +115,23 @@ def update_contact(user_id):
     # Return success message + status
     return jsonify({"message": "User updated"}), 200
 
+
 # DELETE: Delete a contact
 @app.route("/delete_contact/<int:user_id>", methods=["DELETE"])
 def delete_contact(user_id):
+    """Delete a contact from the database by their ID."""
 
     # Get the contact to be deleted
     contact = Contact.query.get(user_id)
     if not contact:  # Handle contact not found
         return jsonify({"message": "User not found"}), 404
-    
+
     # Delete the contact from the database
     db.session.delete(contact)
     db.session.commit()
 
     # Return success message + status
     return jsonify({"message": "User deleted!"}), 200
-    
 
 
 # Only run the entire file from itself.
