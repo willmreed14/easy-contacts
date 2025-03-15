@@ -17,11 +17,11 @@ function App() {
       reflecting the updated state in the UI.
 
   */
-  const [contacts, setContacts] = useState([{"firstName": "Will", "lastName": "Reed", "email":"willmreed14@gmail.com", "id":"1" }])
+  const [contacts, setContacts] = useState([])
 
   // Update the state with all contacts upon page load
   useEffect(() => {
-    //fetchContacts
+    fetchContacts
   }, [])
 
   // Send a GET request to the .../contacts endpoint to get the contacts.
