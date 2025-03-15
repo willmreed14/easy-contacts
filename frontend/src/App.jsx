@@ -19,6 +19,7 @@ function App() {
 
   */
   const [contacts, setContacts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Update the state with all contacts upon page load
   useEffect(() => {
@@ -33,11 +34,33 @@ function App() {
     console.log(data.contacts);
   };
 
+  // Modal toggling
+
+  // Close modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Open modal via create contact
+  const openCreateModal = () => {
+    if (!isModalOpen) setIsModalOpen(true); // open modal if it is not already open
+  };
+
+  // Open modal via update contact
+
+
   // Render each component
   return (
     <>
       <ContactList contacts={contacts} />
-      <ContactForm onContactCreated={fetchContacts} />
+      <button onClick={openCreateModal}>Create New Contact</button>
+      { isModalOpen && <div className="modal">
+        <div className="modal-content">
+          <span className="close" onClick={closeModal}>&times;</span>
+          <ContactForm onContactCreated={fetchContacts} />
+        </div>
+      </div>
+      }
     </>
   );
 }
