@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ContactList from './ContactList';
+import ContactForm from './ContactForm';
 import './App.css';
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
 
   // Update the state with all contacts upon page load
   useEffect(() => {
-    fetchContacts
+    fetchContacts();
   }, []);
 
   // Send a GET request to the .../contacts endpoint to get the contacts.
@@ -36,6 +37,7 @@ function App() {
   return (
     <>
       <ContactList contacts={contacts} />
+      <ContactForm onContactCreated={fetchContacts} />
     </>
   );
 }

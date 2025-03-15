@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-const ContactForm = () => {
+const ContactForm = ({ onContactCreated }) => {
     // State for all three variables
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -43,6 +43,11 @@ const ContactForm = () => {
             alert(data.message)
         } else {
             // successful
+            onContactCreated(); // Refresh the contact list
+            // Clear the form
+            setFirstName("");
+            setLastName("");
+            setEmail("");
         }
     }
 
@@ -54,7 +59,7 @@ const ContactForm = () => {
                 <input
                     type="text"
                     id="firstName"
-                    value="{firstName}"
+                    value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                 />
             </div>
@@ -63,7 +68,7 @@ const ContactForm = () => {
                 <input
                     type="text"
                     id="lastName"
-                    value="{lastName}"
+                    value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                 />
             </div>
@@ -72,7 +77,7 @@ const ContactForm = () => {
                 <input
                     type="text"
                     id="email"
-                    value="{email}"
+                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
                 />
             </div>
