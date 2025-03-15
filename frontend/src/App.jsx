@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import ContactList from './ContactList'
 import './App.css'
 
 function App() {
@@ -16,11 +17,11 @@ function App() {
       reflecting the updated state in the UI.
 
   */
-  const [contacts, setContacts] = useState([])
+  const [contacts, setContacts] = useState([{"firstName": "Will", "lastName": "Reed", "email":"willmreed14@gmail.com", "id":"1" }])
 
-  // Update load the state with all contacts upon page load
+  // Update the state with all contacts upon page load
   useEffect(() => {
-    fetchContacts
+    //fetchContacts
   }, [])
 
   // Send a GET request to the .../contacts endpoint to get the contacts.
@@ -30,11 +31,8 @@ function App() {
     setContacts(data.contacts) // Update the useState
     console.log(data.contacts)
   }
-  return (
-    <>
 
-    </>
-  )
+  return <ContactList contacts={contacts}/>
 }
 
 export default App
