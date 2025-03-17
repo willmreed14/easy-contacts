@@ -1,5 +1,13 @@
+/* Labels */
+label,
+input,
+button {
+  margin-top: 2px;
+  margin-right: 10px
+}
+
 /* The modal itself */
-.modal{
+.modal {
   position: fixed;
   z-index: 1;
   left: 0;
@@ -11,7 +19,7 @@
 }
 
 /* The content within the modal */
-.modal-content{
+.modal-content {
   background-color: #fefefe;
   margin: 10% auto;
   padding: 10px;
@@ -28,11 +36,16 @@
 }
 
 /* Contact Form */
-.form-row{
+.form-row {
   margin: 10px;
 }
 
-/* Labels */
-label {
-  margin-right: 10px
+/* Contact List */
+th {
+  margin: 10px;
+  padding: 10px 10px;
+}
+
+td {
+  padding: 10px 10px;
 }

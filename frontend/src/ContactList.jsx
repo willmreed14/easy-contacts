@@ -1,6 +1,7 @@
 // The component for rendering our contacts
 
 import React from "react"
+import './App.css';
 
 // Create the new component: A table of contacts
 const ContactList = ({contacts}) => {
