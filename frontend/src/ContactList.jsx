@@ -4,7 +4,7 @@ import React from "react"
 import './App.css';
 
 // Create the new component: A table of contacts
-const ContactList = ({contacts}) => {
+const ContactList = ({contacts, updateContact, updateCallback}) => {
     return <div>
         <h2>Contacts</h2>
         <table>
@@ -24,7 +24,7 @@ const ContactList = ({contacts}) => {
                         <td>{contact.lastName}</td>
                         <td>{contact.email}</td>
                         <td>
-                            <button>Update</button>
+                            <button onClick={() => updateContact(contact)}>Update</button>
                             <button>Delete</button>
                         </td>
                     </tr>

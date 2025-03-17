@@ -3,11 +3,14 @@
 import { useState } from "react"
 import './App.css';
 
-const ContactForm = ({ onContactCreated }) => {
+const ContactForm = ({ existingContact = {}, updateCallback }) => {
     // State for all three variables
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
+    const [firstName, setFirstName] = useState(existingContact.firstName || "");
+    const [lastName, setLastName] = useState(existingContact.lastName || "");
+    const [email, setEmail] = useState(existingContact.email || "");
+
+    // Are we updating or creating a contact?
+    const updating = Object.entries(existingContact).length !==0
 
     // What to do when the form is submitted
     const onSubmit = async (e) => {
@@ -23,12 +26,12 @@ const ContactForm = ({ onContactCreated }) => {
             email
         }
 
-        // Specify the URL
-        const url = "http://127.0.0.1:5000/create_contact"
+        // Specify the URL by appending dynamic endpoint (create or update)
+        const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact")
 
         // Setup some options for the request
         const options = {
-            method: "POST",
+            method: updating ? "PATCH" : "POST",
             headers: {
                 "Content-Type": "application/json" // Specify that we're about to submit JSON
             },
@@ -44,11 +47,9 @@ const ContactForm = ({ onContactCreated }) => {
             alert(data.message)
         } else {
             // successful
-            onContactCreated(); // Refresh the contact list
-            // Clear the form
-            setFirstName("");
-            setLastName("");
-            setEmail("");
+            // Close the modal
+            updateCallback();
+ 
         }
     }
 
@@ -82,8 +83,7 @@ const ContactForm = ({ onContactCreated }) => {
                     onChange={(e) => setEmail(e.target.value)}
                 />
             </div>
-            {/* On button press, call onSubmit() */}
-            <button type="submit">Create Contact</button>
+            <button type="submit">{updating ? "Update" : "Create"}</button>
         </form>
     );
 };
