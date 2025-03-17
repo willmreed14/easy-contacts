@@ -1,6 +1,3 @@
-
-/* Modal Styling */
-
 /* The modal itself */
 .modal{
   position: fixed;
@@ -28,4 +25,14 @@
   float: right;
   font-size: 28px;
   font-weight: bold;
+}
+
+/* Contact Form */
+.form-row{
+  margin: 10px;
+}
+
+/* Labels */
+label {
+  margin-right: 10px
 }

@@ -1,6 +1,7 @@
 // Component: Contact intake form
 
 import { useState } from "react"
+import './App.css';
 
 const ContactForm = ({ onContactCreated }) => {
     // State for all three variables
@@ -54,7 +55,7 @@ const ContactForm = ({ onContactCreated }) => {
     // Return the form
     return (
         <form onSubmit={onSubmit}>
-            <div> {/* Ask user for first name */}
+            <div class="form-row"> {/* Ask user for first name */}
                 <label htmlFor="firstName">First Name:</label>
                 <input
                     type="text"
@@ -63,7 +64,7 @@ const ContactForm = ({ onContactCreated }) => {
                     onChange={(e) => setFirstName(e.target.value)}
                 />
             </div>
-            <div> {/* Ask user for last name */}
+            <div class="form-row"> {/* Ask user for last name */}
                 <label htmlFor="lastName">Last Name:</label>
                 <input
                     type="text"
@@ -72,7 +73,7 @@ const ContactForm = ({ onContactCreated }) => {
                     onChange={(e) => setLastName(e.target.value)}
                 />
             </div>
-            <div> {/* Ask user for email */}
+            <div class="form-row"> {/* Ask user for email */}
                 <label htmlFor="email">Email:</label>
                 <input
                     type="text"
