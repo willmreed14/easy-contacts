@@ -1,9 +1,11 @@
+@import "tailwindcss";
+
 /* Labels */
 label,
 input,
 button {
   margin-top: 2px;
-  margin-right: 10px
+  margin-right: 10px;
 }
 
 /* The modal itself */
