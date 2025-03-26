@@ -8,6 +8,7 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
     const [firstName, setFirstName] = useState(existingContact.firstName || "");
     const [lastName, setLastName] = useState(existingContact.lastName || "");
     const [email, setEmail] = useState(existingContact.email || "");
+    const [phone, setPhone] = useState(existingContact.phone || "");
 
     // Are we updating or creating a contact?
     const updating = Object.entries(existingContact).length !== 0
@@ -23,7 +24,8 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
         const data = {
             firstName,
             lastName,
-            email
+            email,
+            phone
         }
 
         // Specify the URL by appending dynamic endpoint (create or update)
@@ -89,6 +91,19 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+            </div>
+            <div className="space-y-2">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                    Phone Number
+                </label>
+                <input
+                    type="tel"
+                    id="phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="(123) 456-7890"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
             </div>

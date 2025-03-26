@@ -95,6 +95,9 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                                 <ChevronUpDownIcon className={`h-4 w-4 ${sortConfig.key === 'email' ? 'text-blue-500' : 'text-gray-400'}`} />
                             </div>
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Phone
+                        </th>
                         <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             <span className="mr-8">Actions</span>
                         </th>
@@ -132,6 +135,9 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                                         )}
                                     </button>
                                 </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {contact.phone || '-'}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button

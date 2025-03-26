@@ -19,6 +19,9 @@ class Contact(db.Model):
     # but it must have a value (cannot be None).
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    phone = db.Column(
+        db.String(20), unique=False, nullable=True
+    )  # Making it nullable in case some contacts don't have phone numbers
 
     def to_json(self):
         """
@@ -31,4 +34,5 @@ class Contact(db.Model):
             "firstName": self.first_name,
             "lastName": self.last_name,
             "email": self.email,
+            "phone": self.phone,
         }

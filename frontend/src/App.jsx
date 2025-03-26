@@ -106,20 +106,20 @@ function App() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Contact Manager</h1>
         <div className="bg-white rounded-lg shadow p-6">
-          <div className="mb-4 relative">
-            <div className="flex justify-between items-center mb-4">
-              <div className="relative flex-1 mr-4">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search contacts..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
+          <div className="flex justify-between items-center mb-4">
+            <div className="relative flex-1 mr-4">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
               </div>
+              <input
+                type="text"
+                placeholder="Search contacts..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div className="flex gap-2">
               <button
                 onClick={exportToCSV}
                 className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 flex items-center gap-2 hover:scale-105"
@@ -127,8 +127,16 @@ function App() {
                 <ArrowDownTrayIcon className="h-5 w-5" />
                 Export CSV
               </button>
+              <button
+                onClick={openCreateModal}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 flex items-center gap-2 hover:scale-105"
+              >
+                <PlusCircleIcon className="h-5 w-5" />
+                Create New Contact
+              </button>
             </div>
           </div>
+
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <ArrowPathIcon className="h-8 w-8 text-blue-500 animate-spin" />
@@ -139,16 +147,7 @@ function App() {
               <p>No contacts found matching "{searchQuery}"</p>
             </div>
           ) : (
-            <>
-              <ContactList contacts={filteredContacts} updateContact={openEditModal} updateCallback={onUpdate} />
-              <button
-                onClick={openCreateModal}
-                className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 flex items-center gap-2 hover:scale-105"
-              >
-                <PlusCircleIcon className="h-5 w-5" />
-                Create New Contact
-              </button>
-            </>
+            <ContactList contacts={filteredContacts} updateContact={openEditModal} updateCallback={onUpdate} />
           )}
         </div>
 
@@ -156,7 +155,9 @@ function App() {
           <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center">
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">{Object.keys(currentContact).length ? 'Edit Contact' : 'Create Contact'}</h2>
+                <h2 className="text-xl font-semibold">
+                  {Object.keys(currentContact).length ? 'Edit Contact' : 'Create Contact'}
+                </h2>
                 <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
                   <span className="text-2xl">&times;</span>
                 </button>
