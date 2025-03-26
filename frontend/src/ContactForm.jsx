@@ -8,6 +8,7 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
     const [firstName, setFirstName] = useState(existingContact.firstName || "");
     const [lastName, setLastName] = useState(existingContact.lastName || "");
     const [email, setEmail] = useState(existingContact.email || "");
+    const [phone, setPhone] = useState(existingContact.phone || "");
 
     // Are we updating or creating a contact?
     const updating = Object.entries(existingContact).length !== 0
@@ -23,7 +24,8 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
         const data = {
             firstName,
             lastName,
-            email
+            email,
+            phone
         }
 
         // Specify the URL by appending dynamic endpoint (create or update)
@@ -52,6 +54,25 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
 
         }
     }
+
+    const formatPhoneNumber = (value) => {
+        // Remove all non-digits
+        const digits = value.replace(/\D/g, '');
+
+        // Format the number
+        if (digits.length <= 3) {
+            return digits;
+        } else if (digits.length <= 6) {
+            return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+        } else {
+            return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+        }
+    };
+
+    const handlePhoneChange = (e) => {
+        const formattedPhone = formatPhoneNumber(e.target.value);
+        setPhone(formattedPhone);
+    };
 
     // Return the form
     return (
@@ -89,6 +110,20 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+            </div>
+            <div className="space-y-2">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                    Phone Number
+                </label>
+                <input
+                    type="tel"
+                    id="phone"
+                    value={phone}
+                    onChange={handlePhoneChange}
+                    placeholder="(123) 456-7890"
+                    maxLength="14"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
             </div>

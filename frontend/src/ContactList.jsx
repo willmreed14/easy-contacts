@@ -9,6 +9,7 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
 
     // State to track which email was just copied (for showing feedback)
     const [copiedEmail, setCopiedEmail] = useState(null);
+    const [copiedPhone, setCopiedPhone] = useState(null);
     const [sortConfig, setSortConfig] = useState({
         key: null,
         direction: 'asc'
@@ -38,6 +39,12 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
         await navigator.clipboard.writeText(email);
         setCopiedEmail(email);
         setTimeout(() => setCopiedEmail(null), 2000); // Reset after 2 seconds
+    };
+
+    const copyPhone = async (phone) => {
+        await navigator.clipboard.writeText(phone);
+        setCopiedPhone(phone);
+        setTimeout(() => setCopiedPhone(null), 2000);
     };
 
     const sortContacts = (contactsToSort) => {
@@ -95,6 +102,9 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                                 <ChevronUpDownIcon className={`h-4 w-4 ${sortConfig.key === 'email' ? 'text-blue-500' : 'text-gray-400'}`} />
                             </div>
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Phone
+                        </th>
                         <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             <span className="mr-8">Actions</span>
                         </th>
@@ -132,6 +142,26 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                                         )}
                                     </button>
                                 </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {contact.phone ? (
+                                    <div className="flex items-center">
+                                        <span className="mr-2">{contact.phone}</span>
+                                        <button
+                                            onClick={() => copyPhone(contact.phone)}
+                                            className="text-gray-400 hover:text-gray-600 transition-colors duration-150"
+                                            title="Copy phone"
+                                        >
+                                            {copiedPhone === contact.phone ? (
+                                                <CheckIcon className="h-5 w-5 text-green-500" />
+                                            ) : (
+                                                <ClipboardDocumentIcon className="h-5 w-5" />
+                                            )}
+                                        </button>
+                                    </div>
+                                ) : (
+                                    '-'
+                                )}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button

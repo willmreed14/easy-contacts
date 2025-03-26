@@ -66,6 +66,7 @@ def create_contact():
     first_name = request.json.get("firstName")
     last_name = request.json.get("lastName")
     email = request.json.get("email")
+    phone = request.json.get("phone")
 
     # Verify that the data was entered correctly
     if not first_name or not last_name or not email:
@@ -78,7 +79,9 @@ def create_contact():
 
     # Now we know the data is good to use for the new contact.
     # Create an instance of the Contact class.
-    new_contact = Contact(first_name=first_name, last_name=last_name, email=email)
+    new_contact = Contact(
+        first_name=first_name, last_name=last_name, email=email, phone=phone
+    )
 
     # Add the new_contact object to the database
     try:
@@ -108,6 +111,7 @@ def update_contact(user_id):
     contact.first_name = data.get("firstName", contact.first_name)
     contact.last_name = data.get("lastName", contact.last_name)
     contact.email = data.get("email", contact.email)
+    contact.phone = data.get("phone", contact.phone)
 
     # Commit the updated contact to the database
     db.session.commit()
