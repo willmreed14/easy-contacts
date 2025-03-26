@@ -1,11 +1,14 @@
 // The component for rendering our contacts
 
-import React from "react"
+import React, { useState } from "react"
 import './App.css';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, ClipboardDocumentIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 // Create the new component: A table of contacts
 const ContactList = ({ contacts, updateContact, updateCallback }) => {
+
+    // State to track which email was just copied (for showing feedback)
+    const [copiedEmail, setCopiedEmail] = useState(null);
 
     // On Delete
     const onDelete = async (id) => {
@@ -27,6 +30,12 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
         }
     };
 
+    const copyEmail = async (email) => {
+        await navigator.clipboard.writeText(email);
+        setCopiedEmail(email);
+        setTimeout(() => setCopiedEmail(null), 2000); // Reset after 2 seconds
+    };
+
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -34,7 +43,9 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                     <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <span className="mr-8">Actions</span>
+                        </th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -55,7 +66,20 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                                 </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {contact.email}
+                                <div className="flex items-center">
+                                    <span className="mr-2">{contact.email}</span>
+                                    <button
+                                        onClick={() => copyEmail(contact.email)}
+                                        className="text-gray-400 hover:text-gray-600 transition-colors duration-150"
+                                        title="Copy email"
+                                    >
+                                        {copiedEmail === contact.email ? (
+                                            <CheckIcon className="h-5 w-5 text-green-500" />
+                                        ) : (
+                                            <ClipboardDocumentIcon className="h-5 w-5" />
+                                        )}
+                                    </button>
+                                </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button
