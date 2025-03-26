@@ -10,7 +10,7 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
     const [email, setEmail] = useState(existingContact.email || "");
 
     // Are we updating or creating a contact?
-    const updating = Object.entries(existingContact).length !==0
+    const updating = Object.entries(existingContact).length !== 0
 
     // What to do when the form is submitted
     const onSubmit = async (e) => {
@@ -49,41 +49,55 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
             // successful
             // Close the modal
             updateCallback();
- 
+
         }
     }
 
     // Return the form
     return (
-        <form onSubmit={onSubmit}>
-            <div class="form-row"> {/* Ask user for first name */}
-                <label htmlFor="firstName">First Name:</label>
+        <form onSubmit={onSubmit} className="space-y-4">
+            <div className="space-y-2">
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                    First Name
+                </label>
                 <input
                     type="text"
                     id="firstName"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
             </div>
-            <div class="form-row"> {/* Ask user for last name */}
-                <label htmlFor="lastName">Last Name:</label>
+            <div className="space-y-2">
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                    Last Name
+                </label>
                 <input
                     type="text"
                     id="lastName"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
             </div>
-            <div class="form-row"> {/* Ask user for email */}
-                <label htmlFor="email">Email:</label>
+            <div className="space-y-2">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    Email
+                </label>
                 <input
-                    type="text"
+                    type="email"
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
             </div>
-            <button type="submit">{updating ? "Update" : "Create"}</button>
+            <button
+                type="submit"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+            >
+                {updating ? "Update Contact" : "Create Contact"}
+            </button>
         </form>
     );
 };

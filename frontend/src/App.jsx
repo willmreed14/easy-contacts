@@ -65,17 +65,34 @@ function App() {
 
   // Render each component
   return (
-    <>
-      <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
-      <button onClick={openCreateModal}>Create New Contact</button>
-      { isModalOpen && <div className="modal">
-        <div className="modal-content">
-          <span className="close" onClick={closeModal}>&times;</span>
-          <ContactForm existingContact = {currentContact} updateCallback={onUpdate}/>
+    <div className="min-h-screen bg-gray-100 py-8 px-4">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Contact Manager</h1>
+        <div className="bg-white rounded-lg shadow p-6">
+          <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
+          <button
+            onClick={openCreateModal}
+            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+          >
+            Create New Contact
+          </button>
         </div>
+
+        {isModalOpen && (
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">{Object.keys(currentContact).length ? 'Edit Contact' : 'Create Contact'}</h2>
+                <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
+                  <span className="text-2xl">&times;</span>
+                </button>
+              </div>
+              <ContactForm existingContact={currentContact} updateCallback={onUpdate} />
+            </div>
+          </div>
+        )}
       </div>
-      }
-    </>
+    </div>
   );
 }
 
