@@ -2,13 +2,17 @@
 
 import React, { useState } from "react"
 import './App.css';
-import { PencilSquareIcon, TrashIcon, ClipboardDocumentIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, ClipboardDocumentIcon, CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
 
 // Create the new component: A table of contacts
 const ContactList = ({ contacts, updateContact, updateCallback }) => {
 
     // State to track which email was just copied (for showing feedback)
     const [copiedEmail, setCopiedEmail] = useState(null);
+    const [sortConfig, setSortConfig] = useState({
+        key: null,
+        direction: 'asc'
+    });
 
     // On Delete
     const onDelete = async (id) => {
@@ -36,20 +40,68 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
         setTimeout(() => setCopiedEmail(null), 2000); // Reset after 2 seconds
     };
 
+    const sortContacts = (contactsToSort) => {
+        if (!sortConfig.key) return contactsToSort;
+
+        return [...contactsToSort].sort((a, b) => {
+            if (sortConfig.key === 'name') {
+                const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
+                const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
+                return sortConfig.direction === 'asc'
+                    ? nameA.localeCompare(nameB)
+                    : nameB.localeCompare(nameA);
+            }
+            if (sortConfig.key === 'email') {
+                return sortConfig.direction === 'asc'
+                    ? a.email.toLowerCase().localeCompare(b.email.toLowerCase())
+                    : b.email.toLowerCase().localeCompare(a.email.toLowerCase());
+            }
+            return 0;
+        });
+    };
+
+    const requestSort = (key) => {
+        setSortConfig((current) => ({
+            key,
+            direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
+
+    const getSortIndicator = (key) => {
+        if (sortConfig.key !== key) return '↕';
+        return sortConfig.direction === 'asc' ? '↑' : '↓';
+    };
+
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                        <th
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group"
+                            onClick={() => requestSort('name')}
+                        >
+                            <div className="flex items-center gap-2">
+                                Name
+                                <ChevronUpDownIcon className={`h-4 w-4 ${sortConfig.key === 'name' ? 'text-blue-500' : 'text-gray-400'}`} />
+                            </div>
+                        </th>
+                        <th
+                            className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group"
+                            onClick={() => requestSort('email')}
+                        >
+                            <div className="flex items-center gap-2">
+                                Email
+                                <ChevronUpDownIcon className={`h-4 w-4 ${sortConfig.key === 'email' ? 'text-blue-500' : 'text-gray-400'}`} />
+                            </div>
+                        </th>
                         <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             <span className="mr-8">Actions</span>
                         </th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {contacts.map((contact) => (
+                    {sortContacts(contacts).map((contact) => (
                         <tr key={contact.id} className="hover:bg-blue-50 transition-colors duration-150 ease-in-out">
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
