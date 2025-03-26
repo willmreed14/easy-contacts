@@ -81,11 +81,11 @@ function App() {
 
   const exportToCSV = () => {
     // Create CSV content
-    const headers = ['First Name', 'Last Name', 'Email'];
+    const headers = ['First Name', 'Last Name', 'Email', 'Phone'];
     const csvContent = [
       headers.join(','),
       ...contacts.map(contact =>
-        `${contact.firstName},${contact.lastName},${contact.email}`
+        `${contact.firstName},${contact.lastName},${contact.email},${contact.phone || ''}`
       )
     ].join('\n');
 
