@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import ContactList from './ContactList';
 import ContactForm from './ContactForm';
 import './App.css';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
 
 function App() {
   // Setup State to store and update the displaying of contacts
@@ -72,8 +73,9 @@ function App() {
           <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
           <button
             onClick={openCreateModal}
-            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 flex items-center gap-2 hover:scale-105"
           >
+            <PlusCircleIcon className="h-5 w-5" />
             Create New Contact
           </button>
         </div>

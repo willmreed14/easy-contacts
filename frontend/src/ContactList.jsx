@@ -2,6 +2,7 @@
 
 import React from "react"
 import './App.css';
+import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 // Create the new component: A table of contacts
 const ContactList = ({ contacts, updateContact, updateCallback }) => {
@@ -38,7 +39,7 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                     {contacts.map((contact) => (
-                        <tr key={contact.id} className="hover:bg-gray-50">
+                        <tr key={contact.id} className="hover:bg-blue-50 transition-colors duration-150 ease-in-out">
                             <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
                                     <div className="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center">
@@ -59,14 +60,16 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button
                                     onClick={() => updateContact(contact)}
-                                    className="text-blue-600 hover:text-blue-900 mr-4"
+                                    className="text-blue-600 hover:text-blue-900 mr-4 inline-flex items-center gap-1"
                                 >
+                                    <PencilSquareIcon className="h-4 w-4" />
                                     Edit
                                 </button>
                                 <button
                                     onClick={() => onDelete(contact.id)}
-                                    className="text-red-600 hover:text-red-900"
+                                    className="text-red-600 hover:text-red-900 inline-flex items-center gap-1"
                                 >
+                                    <TrashIcon className="h-4 w-4" />
                                     Delete
                                 </button>
                             </td>

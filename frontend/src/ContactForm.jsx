@@ -94,7 +94,7 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
             </div>
             <button
                 type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 hover:scale-105"
             >
                 {updating ? "Update Contact" : "Create Contact"}
             </button>
