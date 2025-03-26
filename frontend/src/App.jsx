@@ -24,6 +24,7 @@ function App() {
   const [currentContact, setCurrentContact] = useState({})
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
   // Update the state with all contacts upon page load
   useEffect(() => {
@@ -80,24 +81,34 @@ function App() {
   }
 
   const exportToCSV = () => {
+    // Get current date for filename
+    const date = new Date().toISOString().split('T')[0];
+    const filename = `contacts_${date}.csv`;
+
+    // Use filtered contacts instead of all contacts
+    const contactsToExport = filteredContacts;
+
     // Create CSV content
     const headers = ['First Name', 'Last Name', 'Email', 'Phone'];
     const csvContent = [
       headers.join(','),
-      ...contacts.map(contact =>
+      ...contactsToExport.map(contact =>
         `${contact.firstName},${contact.lastName},${contact.email},${contact.phone || ''}`
       )
     ].join('\n');
 
-    // Create and trigger download
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', 'contacts.csv');
+    link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    // Show toast notification
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
   // Render each component
