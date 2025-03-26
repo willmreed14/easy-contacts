@@ -5,6 +5,27 @@ import './App.css';
 
 // Create the new component: A table of contacts
 const ContactList = ({contacts, updateContact, updateCallback}) => {
+
+    // On Delete
+    const onDelete = async (id) => {
+        try {
+            const options = {
+                method: "DELETE"
+            };
+
+            const response = await fetch(`http://127.0.0.1:5000/delete_contact/${id}`, options)
+
+            if (response.status === 200) {
+                updateCallback()
+            } else {
+                console.error("Failed to delete")
+            };
+
+        } catch (error) {
+            alert(error)
+        }
+    };
+
     return <div>
         <h2>Contacts</h2>
         <table>
@@ -25,7 +46,7 @@ const ContactList = ({contacts, updateContact, updateCallback}) => {
                         <td>{contact.email}</td>
                         <td>
                             <button onClick={() => updateContact(contact)}>Update</button>
-                            <button>Delete</button>
+                            <button onClick={() => onDelete(contact.id)}>Delete</button>
                         </td>
                     </tr>
                 ))}
