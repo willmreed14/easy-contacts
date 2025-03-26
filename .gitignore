@@ -27,3 +27,4 @@ dist-ssr
 *.db
 /backend/instance/mydatabase.db
 *.db
+backend/instance/mydatabase.db
