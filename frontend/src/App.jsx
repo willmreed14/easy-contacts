@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import ContactList from './ContactList';
 import ContactForm from './ContactForm';
 import './App.css';
-import { PlusCircleIcon, ArrowPathIcon, MagnifyingGlassIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { PlusCircleIcon, ArrowPathIcon, MagnifyingGlassIcon, ArrowDownTrayIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 function App() {
   // Setup State to store and update the displaying of contacts
@@ -175,6 +175,14 @@ function App() {
               </div>
               <ContactForm existingContact={currentContact} updateCallback={onUpdate} />
             </div>
+          </div>
+        )}
+
+        {/* Toast Notification */}
+        {showToast && (
+          <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in-up">
+            <CheckIcon className="h-5 w-5" />
+            <span>Contacts exported successfully!</span>
           </div>
         )}
       </div>

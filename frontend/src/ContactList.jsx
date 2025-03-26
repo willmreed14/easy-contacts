@@ -9,6 +9,7 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
 
     // State to track which email was just copied (for showing feedback)
     const [copiedEmail, setCopiedEmail] = useState(null);
+    const [copiedPhone, setCopiedPhone] = useState(null);
     const [sortConfig, setSortConfig] = useState({
         key: null,
         direction: 'asc'
@@ -38,6 +39,12 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
         await navigator.clipboard.writeText(email);
         setCopiedEmail(email);
         setTimeout(() => setCopiedEmail(null), 2000); // Reset after 2 seconds
+    };
+
+    const copyPhone = async (phone) => {
+        await navigator.clipboard.writeText(phone);
+        setCopiedPhone(phone);
+        setTimeout(() => setCopiedPhone(null), 2000);
     };
 
     const sortContacts = (contactsToSort) => {
@@ -137,7 +144,24 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                                 </div>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {contact.phone || '-'}
+                                {contact.phone ? (
+                                    <div className="flex items-center">
+                                        <span className="mr-2">{contact.phone}</span>
+                                        <button
+                                            onClick={() => copyPhone(contact.phone)}
+                                            className="text-gray-400 hover:text-gray-600 transition-colors duration-150"
+                                            title="Copy phone"
+                                        >
+                                            {copiedPhone === contact.phone ? (
+                                                <CheckIcon className="h-5 w-5 text-green-500" />
+                                            ) : (
+                                                <ClipboardDocumentIcon className="h-5 w-5" />
+                                            )}
+                                        </button>
+                                    </div>
+                                ) : (
+                                    '-'
+                                )}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button
