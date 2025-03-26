@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import ContactList from './ContactList';
 import ContactForm from './ContactForm';
 import './App.css';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { PlusCircleIcon, ArrowPathIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 function App() {
   // Setup State to store and update the displaying of contacts
@@ -24,6 +23,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentContact, setCurrentContact] = useState({})
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Update the state with all contacts upon page load
   useEffect(() => {
@@ -43,6 +43,14 @@ function App() {
     }
     setIsLoading(false);
   };
+
+  // Filter contacts based on search query
+  const filteredContacts = contacts.filter(contact => {
+    const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
+    const email = contact.email.toLowerCase();
+    const query = searchQuery.toLowerCase();
+    return fullName.includes(query) || email.includes(query);
+  });
 
   // Modal toggling
 
@@ -78,13 +86,30 @@ function App() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Contact Manager</h1>
         <div className="bg-white rounded-lg shadow p-6">
+          <div className="mb-4 relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search contacts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <ArrowPathIcon className="h-8 w-8 text-blue-500 animate-spin" />
             </div>
+          ) : filteredContacts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+              <MagnifyingGlassIcon className="h-8 w-8 mb-2" />
+              <p>No contacts found matching "{searchQuery}"</p>
+            </div>
           ) : (
             <>
-              <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
+              <ContactList contacts={filteredContacts} updateContact={openEditModal} updateCallback={onUpdate} />
               <button
                 onClick={openCreateModal}
                 className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 flex items-center gap-2 hover:scale-105"
