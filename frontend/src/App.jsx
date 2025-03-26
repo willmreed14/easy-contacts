@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import ContactList from './ContactList';
 import ContactForm from './ContactForm';
 import './App.css';
-import { PlusCircleIcon, ArrowPathIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { PlusCircleIcon, ArrowPathIcon, MagnifyingGlassIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
 function App() {
   // Setup State to store and update the displaying of contacts
@@ -79,6 +79,26 @@ function App() {
     fetchContacts()
   }
 
+  const exportToCSV = () => {
+    // Create CSV content
+    const headers = ['First Name', 'Last Name', 'Email'];
+    const csvContent = [
+      headers.join(','),
+      ...contacts.map(contact =>
+        `${contact.firstName},${contact.lastName},${contact.email}`
+      )
+    ].join('\n');
+
+    // Create and trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'contacts.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   // Render each component
   return (
@@ -87,16 +107,27 @@ function App() {
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Contact Manager</h1>
         <div className="bg-white rounded-lg shadow p-6">
           <div className="mb-4 relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+            <div className="flex justify-between items-center mb-4">
+              <div className="relative flex-1 mr-4">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search contacts..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <button
+                onClick={exportToCSV}
+                className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 flex items-center gap-2 hover:scale-105"
+              >
+                <ArrowDownTrayIcon className="h-5 w-5" />
+                Export CSV
+              </button>
             </div>
-            <input
-              type="text"
-              placeholder="Search contacts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
           </div>
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
