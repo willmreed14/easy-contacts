@@ -3,6 +3,7 @@ import ContactList from './ContactList';
 import ContactForm from './ContactForm';
 import './App.css';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
 
 function App() {
   // Setup State to store and update the displaying of contacts
@@ -22,6 +23,7 @@ function App() {
   const [contacts, setContacts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentContact, setCurrentContact] = useState({})
+  const [isLoading, setIsLoading] = useState(true);
 
   // Update the state with all contacts upon page load
   useEffect(() => {
@@ -30,10 +32,16 @@ function App() {
 
   // Send a GET request to the .../contacts endpoint to get the contacts.
   const fetchContacts = async () => {
-    const response = await fetch("http://127.0.0.1:5000/contacts");
-    const data = await response.json(); // Parse the response to JSON
-    setContacts(data.contacts); // Update the useState
-    console.log(data.contacts);
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://127.0.0.1:5000/contacts");
+      const data = await response.json(); // Parse the response to JSON
+      setContacts(data.contacts); // Update the useState
+      console.log(data.contacts);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+    setIsLoading(false);
   };
 
   // Modal toggling
@@ -70,14 +78,22 @@ function App() {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Contact Manager</h1>
         <div className="bg-white rounded-lg shadow p-6">
-          <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
-          <button
-            onClick={openCreateModal}
-            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 flex items-center gap-2 hover:scale-105"
-          >
-            <PlusCircleIcon className="h-5 w-5" />
-            Create New Contact
-          </button>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <ArrowPathIcon className="h-8 w-8 text-blue-500 animate-spin" />
+            </div>
+          ) : (
+            <>
+              <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
+              <button
+                onClick={openCreateModal}
+                className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 flex items-center gap-2 hover:scale-105"
+              >
+                <PlusCircleIcon className="h-5 w-5" />
+                Create New Contact
+              </button>
+            </>
+          )}
         </div>
 
         {isModalOpen && (
