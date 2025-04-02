@@ -13,6 +13,27 @@ export default function AuthModal({ isOpen, onClose }) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    const getReadableErrorMessage = (errorCode) => {
+        switch (errorCode) {
+            case 'auth/email-already-in-use':
+                return 'This email is already registered. Please sign in instead.';
+            case 'auth/invalid-email':
+                return 'Please enter a valid email address.';
+            case 'auth/weak-password':
+                return 'Password should be at least 6 characters long.';
+            case 'auth/user-not-found':
+                return 'No account found with this email. Please sign up instead.';
+            case 'auth/wrong-password':
+                return 'Incorrect password. Please try again.';
+            case 'auth/invalid-credential':
+                return 'Invalid email or password. Please try again.';
+            case 'auth/too-many-requests':
+                return 'Too many attempts. Please try again later.';
+            default:
+                return 'An error occurred. Please try again.';
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -25,7 +46,7 @@ export default function AuthModal({ isOpen, onClose }) {
             }
             onClose();
         } catch (err) {
-            setError(err.message);
+            setError(getReadableErrorMessage(err.code));
         }
     };
 
