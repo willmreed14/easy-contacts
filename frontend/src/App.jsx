@@ -5,6 +5,8 @@ import './App.css';
 import { PlusCircleIcon, ArrowPathIcon, MagnifyingGlassIcon, ArrowDownTrayIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { auth } from './firebase';
 import { contactService } from './services/contactService';
+import AuthModal from './components/AuthModal';
+import SignInBanner from './components/SignInBanner';
 
 function App() {
   // Setup State to store and update the displaying of contacts
@@ -28,28 +30,33 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [user, setUser] = useState(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   useEffect(() => {
-    // Listen for auth state changes
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setUser(user);
+      setIsLoading(true);
 
-      if (user) {
-        // User just signed in, migrate contacts if needed
-        const localContacts = contactService.getLocalContacts();
-        if (localContacts.length > 0) {
-          await contactService.migrateLocalContactsToFirestore(user.uid);
+      try {
+        if (user) {
+          // User just signed in, migrate contacts if needed
+          const localContacts = contactService.getLocalContacts();
+          if (localContacts.length > 0) {
+            await contactService.migrateLocalContactsToFirestore(user.uid);
+          }
+          // Get contacts from Firestore
+          const firestoreContacts = await contactService.getContacts(user.uid);
+          setContacts(firestoreContacts);
+        } else {
+          // Not signed in, get contacts from localStorage
+          const localContacts = contactService.getLocalContacts();
+          setContacts(localContacts);
         }
-        // Get contacts from Firestore
-        const firestoreContacts = await contactService.getContacts(user.uid);
-        setContacts(firestoreContacts);
-      } else {
-        // Not signed in, get contacts from localStorage
-        const localContacts = contactService.getLocalContacts();
-        setContacts(localContacts);
+      } catch (error) {
+        console.error('Error loading contacts:', error);
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsLoading(false);
     });
 
     return () => unsubscribe();
@@ -121,11 +128,41 @@ function App() {
     setTimeout(() => setShowToast(false), 3000);
   };
 
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   // Render each component
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Contact Manager</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Contact Manager</h1>
+          {user ? (
+            <button
+              onClick={handleSignOut}
+              className="text-gray-600 hover:text-gray-800"
+            >
+              Sign Out
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Sign In
+            </button>
+          )}
+        </div>
+
+        {!user && (
+          <SignInBanner onSignIn={() => setIsAuthModalOpen(true)} />
+        )}
+
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex justify-between items-center mb-4">
             <div className="relative flex-1 mr-4">
@@ -195,6 +232,11 @@ function App() {
             <span>Contacts exported successfully!</span>
           </div>
         )}
+
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
       </div>
     </div>
   );
