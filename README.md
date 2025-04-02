@@ -142,5 +142,3 @@ SOFTWARE.
 - [Tailwind CSS](https://tailwindcss.com/) for the styling
 - [Firebase](https://firebase.google.com/) for authentication and storage
 - [React](https://reactjs.org/) for the frontend framework
-
-Would you like me to expand on any section or add additional information?
