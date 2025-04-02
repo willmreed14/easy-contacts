@@ -3,6 +3,8 @@ import ContactList from './ContactList';
 import ContactForm from './ContactForm';
 import './App.css';
 import { PlusCircleIcon, ArrowPathIcon, MagnifyingGlassIcon, ArrowDownTrayIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { auth } from './firebase';
+import { contactService } from './services/contactService';
 
 function App() {
   // Setup State to store and update the displaying of contacts
@@ -25,25 +27,33 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [user, setUser] = useState(null);
 
-  // Update the state with all contacts upon page load
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    // Listen for auth state changes
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      setUser(user);
 
-  // Send a GET request to the .../contacts endpoint to get the contacts.
-  const fetchContacts = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch("http://127.0.0.1:5000/contacts");
-      const data = await response.json(); // Parse the response to JSON
-      setContacts(data.contacts); // Update the useState
-      console.log(data.contacts);
-    } catch (error) {
-      console.error("Error fetching contacts:", error);
-    }
-    setIsLoading(false);
-  };
+      if (user) {
+        // User just signed in, migrate contacts if needed
+        const localContacts = contactService.getLocalContacts();
+        if (localContacts.length > 0) {
+          await contactService.migrateLocalContactsToFirestore(user.uid);
+        }
+        // Get contacts from Firestore
+        const firestoreContacts = await contactService.getContacts(user.uid);
+        setContacts(firestoreContacts);
+      } else {
+        // Not signed in, get contacts from localStorage
+        const localContacts = contactService.getLocalContacts();
+        setContacts(localContacts);
+      }
+
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Filter contacts based on search query
   const filteredContacts = contacts.filter(contact => {
