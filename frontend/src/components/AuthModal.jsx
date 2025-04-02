@@ -4,14 +4,17 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signInWithPopup,
-    GoogleAuthProvider
+    GoogleAuthProvider,
+    sendPasswordResetEmail
 } from 'firebase/auth';
 
 export default function AuthModal({ isOpen, onClose }) {
     const [isSignUp, setIsSignUp] = useState(false);
+    const [isForgotPassword, setIsForgotPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     const getReadableErrorMessage = (errorCode) => {
         switch (errorCode) {
@@ -22,7 +25,7 @@ export default function AuthModal({ isOpen, onClose }) {
             case 'auth/weak-password':
                 return 'Password should be at least 6 characters long.';
             case 'auth/user-not-found':
-                return 'No account found with this email. Please sign up instead.';
+                return 'No account found with this email address.';
             case 'auth/wrong-password':
                 return 'Incorrect password. Please try again.';
             case 'auth/invalid-credential':
@@ -60,6 +63,24 @@ export default function AuthModal({ isOpen, onClose }) {
         }
     };
 
+    const handleForgotPassword = async (e) => {
+        e.preventDefault();
+        setError('');
+        setSuccessMessage('');
+
+        if (!email) {
+            setError('Please enter your email address.');
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            setSuccessMessage('Password reset email sent! Please check your inbox.');
+        } catch (err) {
+            setError(getReadableErrorMessage(err.code));
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -67,7 +88,7 @@ export default function AuthModal({ isOpen, onClose }) {
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">
-                        {isSignUp ? 'Create Account' : 'Sign In'}
+                        {isForgotPassword ? 'Reset Password' : (isSignUp ? 'Create Account' : 'Sign In')}
                     </h2>
                     <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
                         <span className="text-2xl">&times;</span>
@@ -80,7 +101,13 @@ export default function AuthModal({ isOpen, onClose }) {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                {successMessage && (
+                    <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">
+                        {successMessage}
+                    </div>
+                )}
+
+                <form onSubmit={isForgotPassword ? handleForgotPassword : handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">
                             Email
@@ -93,7 +120,7 @@ export default function AuthModal({ isOpen, onClose }) {
                             required
                         />
                     </div>
-                    <div>
+                    {!isForgotPassword && <div>
                         <label className="block text-sm font-medium text-gray-700">
                             Password
                         </label>
@@ -104,34 +131,67 @@ export default function AuthModal({ isOpen, onClose }) {
                             className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md"
                             required
                         />
-                    </div>
+                    </div>}
                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
                     >
-                        {isSignUp ? 'Sign Up' : 'Sign In'}
+                        {isForgotPassword ? 'Send Reset Link' : (isSignUp ? 'Sign Up' : 'Sign In')}
                     </button>
                 </form>
 
-                <div className="mt-4">
-                    <button
-                        onClick={handleGoogleSignIn}
-                        className="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 flex items-center justify-center gap-2"
-                    >
-                        <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
-                        Continue with Google
-                    </button>
+                {!isForgotPassword && (
+                    <div className="mt-4 text-center text-sm text-gray-600">
+                        {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+                        <button
+                            onClick={() => {
+                                setIsSignUp(!isSignUp);
+                                setError('');
+                            }}
+                            className="text-blue-500 hover:text-blue-600"
+                        >
+                            {isSignUp ? 'Sign In' : 'Sign Up'}
+                        </button>
+                    </div>
+                )}
+
+                <div className="mt-2 text-center text-sm">
+                    {isForgotPassword ? (
+                        <button
+                            onClick={() => {
+                                setIsForgotPassword(false);
+                                setError('');
+                                setSuccessMessage('');
+                            }}
+                            className="text-blue-500 hover:text-blue-600"
+                        >
+                            Back to Sign In
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => {
+                                setIsForgotPassword(true);
+                                setError('');
+                                setPassword('');
+                            }}
+                            className="text-gray-500 hover:text-gray-600"
+                        >
+                            Forgot Password?
+                        </button>
+                    )}
                 </div>
 
-                <div className="mt-4 text-center text-sm text-gray-600">
-                    {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-                    <button
-                        onClick={() => setIsSignUp(!isSignUp)}
-                        className="text-blue-500 hover:text-blue-600"
-                    >
-                        {isSignUp ? 'Sign In' : 'Sign Up'}
-                    </button>
-                </div>
+                {!isForgotPassword && (
+                    <div className="mt-4">
+                        <button
+                            onClick={handleGoogleSignIn}
+                            className="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 flex items-center justify-center gap-2"
+                        >
+                            <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
+                            Continue with Google
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
