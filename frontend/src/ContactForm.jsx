@@ -2,8 +2,9 @@
 
 import { useState } from "react"
 import './App.css';
+import { contactService } from './services/contactService';
 
-const ContactForm = ({ existingContact = {}, updateCallback }) => {
+const ContactForm = ({ existingContact = {}, updateCallback, user }) => {
     // State for all three variables
     const [firstName, setFirstName] = useState(existingContact.firstName || "");
     const [lastName, setLastName] = useState(existingContact.lastName || "");
@@ -15,45 +16,27 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
 
     // What to do when the form is submitted
     const onSubmit = async (e) => {
-        // Don't refresh the page when submitting the form
-        e.preventDefault()
+        e.preventDefault();
 
-        // Setup POST request to create the contact
-
-        // Define the data we want to pass w/ the request
         const data = {
             firstName,
             lastName,
             email,
             phone
-        }
+        };
 
-        // Specify the URL by appending dynamic endpoint (create or update)
-        const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact")
-
-        // Setup some options for the request
-        const options = {
-            method: updating ? "PATCH" : "POST",
-            headers: {
-                "Content-Type": "application/json" // Specify that we're about to submit JSON
-            },
-            body: JSON.stringify(data)
-        }
-
-        const response = await fetch(url, options);
-
-        // Verify whether response is successful
-        if (response.status !== 201 && response.status !== 200) {
-            // not successful
-            const data = await response.json()
-            alert(data.message)
-        } else {
-            // successful
-            // Close the modal
+        try {
+            if (updating) {
+                await contactService.updateContact(existingContact.id, data, user?.uid);
+            } else {
+                await contactService.createContact(data, user?.uid);
+            }
             updateCallback();
-
+        } catch (error) {
+            console.error('Error saving contact:', error);
+            // Handle error (maybe show a toast notification)
         }
-    }
+    };
 
     const formatPhoneNumber = (value) => {
         // Remove all non-digits

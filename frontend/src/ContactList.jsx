@@ -3,9 +3,10 @@
 import React, { useState } from "react"
 import './App.css';
 import { PencilSquareIcon, TrashIcon, ClipboardDocumentIcon, CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/outline';
+import { contactService } from './services/contactService';
 
 // Create the new component: A table of contacts
-const ContactList = ({ contacts, updateContact, updateCallback }) => {
+const ContactList = ({ contacts, updateContact, updateCallback, user }) => {
 
     // State to track which email was just copied (for showing feedback)
     const [copiedEmail, setCopiedEmail] = useState(null);
@@ -16,22 +17,13 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
     });
 
     // On Delete
-    const onDelete = async (id) => {
+    const deleteContact = async (contactId) => {
         try {
-            const options = {
-                method: "DELETE"
-            };
-
-            const response = await fetch(`http://127.0.0.1:5000/delete_contact/${id}`, options)
-
-            if (response.status === 200) {
-                updateCallback()
-            } else {
-                console.error("Failed to delete")
-            };
-
+            await contactService.deleteContact(contactId, user?.uid);
+            updateCallback();
         } catch (error) {
-            alert(error)
+            console.error('Error deleting contact:', error);
+            // Handle error
         }
     };
 
@@ -172,7 +164,7 @@ const ContactList = ({ contacts, updateContact, updateCallback }) => {
                                     Edit
                                 </button>
                                 <button
-                                    onClick={() => onDelete(contact.id)}
+                                    onClick={() => deleteContact(contact.id)}
                                     className="text-red-600 hover:text-red-900 inline-flex items-center gap-1"
                                 >
                                     <TrashIcon className="h-4 w-4" />

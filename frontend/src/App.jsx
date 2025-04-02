@@ -92,10 +92,19 @@ function App() {
   };
 
   //
+  const refreshContacts = async () => {
+    try {
+      const updatedContacts = await contactService.getContacts(user?.uid);
+      setContacts(updatedContacts);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
+
   const onUpdate = () => {
-    closeModal()
-    fetchContacts()
-  }
+    closeModal();
+    refreshContacts();
+  };
 
   const exportToCSV = () => {
     // Get current date for filename
