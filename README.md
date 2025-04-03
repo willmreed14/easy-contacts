@@ -1,144 +1,146 @@
-# Easy Contacts
+# 👥 Easy Contacts
 
-A modern web application for managing contacts, built with Flask, React, Firebase, and Tailwind CSS. Store and manage your contacts seamlessly with both local and cloud storage options.
+A modern contact management application with two implementations:
+- **Main Branch (Firebase)**: A fully client-side application using Firebase for authentication and data storage
+- **Flask Branch**: A full-stack implementation using a Flask REST API and local storage
 
-## Features
+## 🌟 Features
 
-- 👤 **User Authentication**
-  - Email/Password login
-  - Google Sign-in
-  - Password reset functionality
-  - Automatic contact migration upon sign-up
+### Common Features (Both Versions)
+- Clean, responsive UI built with React and Tailwind CSS
+- Full CRUD operations for contact management
+- Automatic phone number formatting
+- One-click copy for email and phone numbers
+- Real-time search and filter functionality
+- Column sorting
+- CSV export capability
+- Interactive feedback (toast notifications)
 
-- 📱 **Contact Management**
-  - Create, read, update, and delete contacts
-  - Store name, email, and phone information
-  - Automatic phone number formatting
-  - One-click copy for email and phone numbers
+### Main Branch (Firebase) Features
+- Email/Password and Google Sign-in authentication
+- Cloud storage using Firestore
+- Local storage for unauthenticated users
+- Automatic migration of local contacts upon authentication
+- Multi-device sync for authenticated users
 
-- 🔍 **Search & Sort**
-  - Real-time contact filtering
-  - Sort by name or email
-  - Clear empty state indicators
+### Flask Branch Features
+- Local data persistence using SQLite database
+- RESTful API endpoints for contact operations
+- Server-side data validation
+- No authentication required - perfect for personal use
 
-- 💾 **Storage Options**
-  - Local storage for non-authenticated users
-  - Cloud storage (Firebase) for authenticated users
-  - Automatic migration from local to cloud storage
+## 🚀 Getting Started
 
-- 📤 **Export Options**
-  - Export to CSV with date-stamped filenames
-  - Export filtered contacts only
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+- Python 3.8+ (for Flask branch)
 
-## Technologies Used
-
-- Frontend:
-  - React
-  - Tailwind CSS
-  - Heroicons
-  - Vite
-
-- Backend/Storage:
-  - Firebase Authentication
-  - Cloud Firestore
-  - Local Storage API
-
-## Getting Started
+### Installation
 
 1. Clone the repository:
 ```bash
-git clone [repository-url]
-cd contact-manager
+git clone https://github.com/yourusername/easy-contacts.git
+cd easy-contacts
 ```
 
-2. Install dependencies:
+2. Choose your version:
+
+#### For Main Branch (Firebase):
+```bash
+git checkout main  # or just stay on main branch
+npm install
+```
+
+Create a `.env` file with your Firebase configuration:
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+#### For Flask Branch:
+```bash
+git checkout Flask
+```
+
+Setup Frontend:
 ```bash
 npm install
 ```
 
-3. Create a `.env` file in the project root and add your Firebase configuration:
-```env
-VITE_FIREBASE_API_KEY=your-api-key
-VITE_FIREBASE_AUTH_DOMAIN=your-auth-domain
-VITE_FIREBASE_PROJECT_ID=your-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-storage-bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
-VITE_FIREBASE_APP_ID=your-app-id
+Setup Backend:
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-4. Start the development server:
+### Running the Application
+
+#### Main Branch (Firebase):
 ```bash
 npm run dev
 ```
 
-## Project Structure
-
-```
-contact-manager/
-├── src/
-│   ├── components/
-│   │   ├── AuthModal.jsx
-│   │   ├── ContactForm.jsx
-│   │   ├── ContactList.jsx
-│   │   └── SignInBanner.jsx
-│   ├── services/
-│   │   └── contactService.js
-│   ├── App.jsx
-│   ├── firebase.js
-│   └── main.jsx
-├── .env
-└── package.json
+#### Flask Branch:
+Terminal 1 (Backend):
+```bash
+cd backend
+flask run
 ```
 
-## Firebase Setup
+Terminal 2 (Frontend):
+```bash
+npm run dev
+```
 
-1. Create a new Firebase project
-2. Enable Authentication (Email/Password and Google providers)
-3. Set up Cloud Firestore
-4. Add your web app to the Firebase project
-5. Copy the configuration to your `.env` file
+## 🔄 Switching Between Versions
 
-## Security
+To switch between versions:
+```bash
+git checkout main    # For Firebase version (main branch)
+git checkout Flask  # For Flask version
+```
 
-- Firestore security rules ensure users can only access their own contacts
-- Secure authentication flow with password reset capability
-- Local storage for temporary data before authentication
+## 🛠️ Technologies Used
 
-## Contributing
+### Common (Both Versions)
+- React
+- Tailwind CSS
+- Vite
+- Axios
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
+### Firebase Version
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Hosting
+
+### Flask Version
+- Flask
+- SQLite
+- Flask-SQLAlchemy
+- Flask-CORS
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
+## 🙏 Acknowledgments
 
-MIT License
-
-Copyright (c) 2024 William Reed
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-## Acknowledgments
-
-- [Heroicons](https://heroicons.com/) for the beautiful icons
-- [Tailwind CSS](https://tailwindcss.com/) for the styling
-- [Firebase](https://firebase.google.com/) for authentication and storage
-- [React](https://reactjs.org/) for the frontend framework
+- React + Vite template
+- Tailwind CSS
+- Heroicons
+- React Hot Toast
