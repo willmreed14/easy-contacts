@@ -28,3 +28,4 @@ dist-ssr
 /backend/instance/mydatabase.db
 *.db
 backend/instance/mydatabase.db
+frontend/.env
