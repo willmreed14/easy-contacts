@@ -1,6 +1,6 @@
 # Easy Contacts
 
-A modern web application for managing contacts, built with React, Firebase, and Tailwind CSS. Store and manage your contacts seamlessly with both local and cloud storage options.
+A modern web application for managing contacts, built with Flask, React, Firebase, and Tailwind CSS. Store and manage your contacts seamlessly with both local and cloud storage options.
 
 ## Features
 
