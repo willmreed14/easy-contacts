@@ -214,7 +214,12 @@ function App() {
               <p>No contacts found matching "{searchQuery}"</p>
             </div>
           ) : (
-            <ContactList contacts={filteredContacts} updateContact={openEditModal} updateCallback={onUpdate} />
+            <ContactList
+              contacts={filteredContacts}
+              updateContact={openEditModal}
+              updateCallback={onUpdate}
+              user={user}
+            />
           )}
         </div>
 
@@ -229,7 +234,11 @@ function App() {
                   <span className="text-2xl">&times;</span>
                 </button>
               </div>
-              <ContactForm existingContact={currentContact} updateCallback={onUpdate} />
+              <ContactForm
+                existingContact={currentContact}
+                updateCallback={onUpdate}
+                user={user}
+              />
             </div>
           </div>
         )}

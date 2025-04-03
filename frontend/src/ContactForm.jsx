@@ -31,6 +31,13 @@ const ContactForm = ({ existingContact = {}, updateCallback, user }) => {
             } else {
                 await contactService.createContact(data, user?.uid);
             }
+            // Clear the form
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+            setPhone('');
+
+            // Call the callback to refresh the contact list
             updateCallback();
         } catch (error) {
             console.error('Error saving contact:', error);

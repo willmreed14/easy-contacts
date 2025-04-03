@@ -17,13 +17,17 @@ const ContactList = ({ contacts, updateContact, updateCallback, user }) => {
     });
 
     // On Delete
-    const deleteContact = async (contactId) => {
+    const handleDelete = async (contactId) => {
+        console.log('Attempting to delete contact:', contactId);
+        console.log('User ID:', user?.uid);
+
         try {
             await contactService.deleteContact(contactId, user?.uid);
+            console.log('Contact deleted successfully');
             updateCallback();
         } catch (error) {
+            console.log('Error deleting contact:', error);
             console.error('Error deleting contact:', error);
-            // Handle error
         }
     };
 
@@ -164,7 +168,7 @@ const ContactList = ({ contacts, updateContact, updateCallback, user }) => {
                                     Edit
                                 </button>
                                 <button
-                                    onClick={() => deleteContact(contact.id)}
+                                    onClick={() => handleDelete(contact.id)}
                                     className="text-red-600 hover:text-red-900 inline-flex items-center gap-1"
                                 >
                                     <TrashIcon className="h-4 w-4" />
