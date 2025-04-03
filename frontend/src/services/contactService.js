@@ -49,19 +49,14 @@ class ContactService {
 
     // Delete contact
     async deleteContact(contactId, userId = null) {
-        console.log('Delete contact called with:', { contactId, userId });
         try {
             if (userId) {
-                console.log('Attempting Firestore delete');
                 const contactRef = doc(db, `users/${userId}/contacts/${contactId}`);
                 await deleteDoc(contactRef);
-                console.log('Firestore delete successful');
             } else {
-                console.log('Attempting localStorage delete');
                 const contacts = this.getLocalContacts();
                 const updatedContacts = contacts.filter(c => c.id !== contactId);
                 localStorage.setItem(this.localStorageKey, JSON.stringify(updatedContacts));
-                console.log('localStorage delete successful');
             }
         } catch (error) {
             console.error('Error in deleteContact:', error);
