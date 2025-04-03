@@ -3,6 +3,10 @@ import ContactList from './ContactList';
 import ContactForm from './ContactForm';
 import './App.css';
 import { PlusCircleIcon, ArrowPathIcon, MagnifyingGlassIcon, ArrowDownTrayIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { auth } from './firebase';
+import { contactService } from './services/contactService';
+import AuthModal from './components/AuthModal';
+import SignInBanner from './components/SignInBanner';
 
 function App() {
   // Setup State to store and update the displaying of contacts
@@ -25,25 +29,38 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showToast, setShowToast] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // Update the state with all contacts upon page load
   useEffect(() => {
-    fetchContacts();
-  }, []);
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      setUser(user);
+      setIsLoading(true);
 
-  // Send a GET request to the .../contacts endpoint to get the contacts.
-  const fetchContacts = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch("http://127.0.0.1:5000/contacts");
-      const data = await response.json(); // Parse the response to JSON
-      setContacts(data.contacts); // Update the useState
-      console.log(data.contacts);
-    } catch (error) {
-      console.error("Error fetching contacts:", error);
-    }
-    setIsLoading(false);
-  };
+      try {
+        if (user) {
+          // User just signed in, migrate contacts if needed
+          const localContacts = contactService.getLocalContacts();
+          if (localContacts.length > 0) {
+            await contactService.migrateLocalContactsToFirestore(user.uid);
+          }
+          // Get contacts from Firestore
+          const firestoreContacts = await contactService.getContacts(user.uid);
+          setContacts(firestoreContacts);
+        } else {
+          // Not signed in, get contacts from localStorage
+          const localContacts = contactService.getLocalContacts();
+          setContacts(localContacts);
+        }
+      } catch (error) {
+        console.error('Error loading contacts:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Filter contacts based on search query
   const filteredContacts = contacts.filter(contact => {
@@ -75,10 +92,19 @@ function App() {
   };
 
   //
+  const refreshContacts = async () => {
+    try {
+      const updatedContacts = await contactService.getContacts(user?.uid);
+      setContacts(updatedContacts);
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+    }
+  };
+
   const onUpdate = () => {
-    closeModal()
-    fetchContacts()
-  }
+    closeModal();
+    refreshContacts();
+  };
 
   const exportToCSV = () => {
     // Get current date for filename
@@ -111,11 +137,41 @@ function App() {
     setTimeout(() => setShowToast(false), 3000);
   };
 
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   // Render each component
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Contact Manager</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Easy Contacts</h1>
+          {user ? (
+            <button
+              onClick={handleSignOut}
+              className="text-gray-600 hover:text-gray-800"
+            >
+              Sign Out
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsAuthModalOpen(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Sign In
+            </button>
+          )}
+        </div>
+
+        {!user && (
+          <SignInBanner onSignIn={() => setIsAuthModalOpen(true)} />
+        )}
+
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex justify-between items-center mb-4">
             <div className="relative flex-1 mr-4">
@@ -158,7 +214,12 @@ function App() {
               <p>No contacts found matching "{searchQuery}"</p>
             </div>
           ) : (
-            <ContactList contacts={filteredContacts} updateContact={openEditModal} updateCallback={onUpdate} />
+            <ContactList
+              contacts={filteredContacts}
+              updateContact={openEditModal}
+              updateCallback={onUpdate}
+              user={user}
+            />
           )}
         </div>
 
@@ -173,7 +234,11 @@ function App() {
                   <span className="text-2xl">&times;</span>
                 </button>
               </div>
-              <ContactForm existingContact={currentContact} updateCallback={onUpdate} />
+              <ContactForm
+                existingContact={currentContact}
+                updateCallback={onUpdate}
+                user={user}
+              />
             </div>
           </div>
         )}
@@ -185,6 +250,11 @@ function App() {
             <span>Contacts exported successfully!</span>
           </div>
         )}
+
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
       </div>
     </div>
   );
